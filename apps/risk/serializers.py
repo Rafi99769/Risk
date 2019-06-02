@@ -4,7 +4,7 @@ from apps.risk import models
 
 
 class RiskTypeSerializer(serializers.ModelSerializer):
-    field_names = serializers.SerializerMethodField()
+    field_names_ = serializers.SerializerMethodField()
 
     class Meta:
         model = models.RiskType
@@ -12,12 +12,8 @@ class RiskTypeSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_field_names_(ob):
-        has_fields = True
-        try:
-            ob.risk_fields
-        except models.RiskField.DoesNotExist:
-            has_fields = False
-        return ob.risk_fields.values_list('name') if has_fields else None
+        names = ob.risk_fields.values_list('name', flat=True)
+        return names[0] if len(names) else None
 
 
 class RiskFieldSerializer(serializers.ModelSerializer):
@@ -29,9 +25,5 @@ class RiskFieldSerializer(serializers.ModelSerializer):
 
     @staticmethod
     def get_enum_choices(ob):
-        has_choices = True
-        try:
-            ob.choices
-        except models.EnumChoice.DoesNotExist:
-            has_choices = False
-        return ob.choices.values_list('name') if has_choices else None
+        choices = ob.choices.values_list('name', flat=True)
+        return choices[0] if len(choices) else None
