@@ -18,7 +18,7 @@ class SingleRiskType(views.APIView):
         risk = models.RiskType.objects.get(pk=risk_id)
         result = {'risk': risk.name, 'fields': []}
         for rf in risk.risk_fields.all():
-            field = {'field': rf.name, 'type': rf.type, 'choices': []}
+            field = {'id': rf.id, 'field': rf.name, 'type': rf.type, 'choices': []}
             if rf.type == 'enum':
                 for c in rf.choices.all():
                     field['choices'].append(c.name)
@@ -29,3 +29,8 @@ class SingleRiskType(views.APIView):
 class RiskFieldViewSet(viewsets.ModelViewSet):
     queryset = models.RiskField.objects.all()
     serializer_class = serializers.RiskFieldSerializer
+
+
+class EnumChoiceViewSet(viewsets.ModelViewSet):
+    queryset = models.EnumChoice.objects.all()
+    serializer_class = serializers.EnumChoiceSerializer

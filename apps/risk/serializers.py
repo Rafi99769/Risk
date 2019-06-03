@@ -27,3 +27,9 @@ class RiskFieldSerializer(serializers.ModelSerializer):
     def get_enum_choices(ob):
         choices = ob.choices.values_list('name', flat=True)
         return choices[0] if len(choices) else None
+
+
+class EnumChoiceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.EnumChoice
+        fields = '__all__'
