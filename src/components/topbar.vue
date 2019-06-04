@@ -17,7 +17,7 @@
 
 <script>
   export default {
-    name: 'topbar',
+    name: 'top-bar',
     data() {
       return {}
     }

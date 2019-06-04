@@ -1,6 +1,6 @@
 <template>
   <div>
-    <topbar/>
+    <top-bar/>
     <b-container fluid>
       <b-row>
         <b-col md="4" class="my-1">
@@ -56,45 +56,22 @@
           </b-pagination>
         </b-col>
       </b-row>
-      <b-modal
-        :id="formFields.id"
-        :title="formFields.risk"
-        ok-only
-        centered
-        :header-bg-variant="'info'"
-        :footer-bg-variant="'info'">
-        <b-form @reset="onReset" v-if="show">
-          <b-form-group v-for="field in formFields.fields"
-                        :key="field.id"
-                        :label="field.field">
-            <b-form-input v-if="field.type === 'text'"
-                          type="text">
-            </b-form-input>
-            <b-form-input v-else-if="field.type === 'number'"
-                          type="number">
-            </b-form-input>
-            <b-form-input v-else-if="field.type === 'date'"
-                          type="date">
-            </b-form-input>
-            <b-form-select v-else-if="field.type === 'enum'"
-                           :options="field.choices">
-            </b-form-select>
-          </b-form-group>
-        </b-form>
-      </b-modal>
+      <show-risk-field-modal :form-fields="formFields" />
     </b-container>
   </div>
 </template>
 
 <script>
-  import Topbar from "./topbar";
+  import TopBar from "./topbar";
+  import ShowRiskFieldModal from "./show-risk-field-modal";
 
   const typeUrl = '/api/risk_type/';
   const singleTypeUrl = '/api/single_risk_type/';
 
   export default {
     components: {
-      Topbar
+      TopBar,
+      ShowRiskFieldModal
     },
     name: 'risk',
     data() {
@@ -105,19 +82,18 @@
         totalRows: 1,
         perPage: 10,
         pageOptions: [1, 5, 10, 15],
-        show: false,
         fields: [
           {key: 'name', label: 'Type'},
           {key: 'field_names_', label: 'Fields'},
           {key: 'actions', label: 'Actions'}
         ],
-        formFields: {id: 'risk-modal'}
+        formFields: {id: 'risk-modal', show: false}
       }
     },
     beforeMount() {
       this.$http.get(typeUrl).then((data) => {
         this.items = data.data.results;
-      }).catch(error => {
+      }).catch(() => {
         this.items = [];
       })
     },
@@ -133,12 +109,10 @@
         this.$http.get(singleTypeUrl + '?risk_id=' + item.id).then((data) => {
           this.formFields = Object.assign(this.formFields, data.data);
           this.$root.$emit('bv::show::modal', this.formFields.id, button);
-          this.show = true;
-        }).catch(error => {
-          this.formFields = {id: 'risk-modal'};
+          this.formFields.show = true;
+        }).catch(() => {
+          this.formFields = {id: 'show-field-modal', show: false};
         })
-      },
-      onReset() {
       }
     }
   }
