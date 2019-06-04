@@ -1,6 +1,7 @@
 <template>
   <div>
     <top-bar/>
+
     <b-container fluid>
       <b-row>
         <b-col md="4" class="my-1">
@@ -42,7 +43,7 @@
           <b-button
             size="sm"
             variant="info"
-            @click="fieldsForm(row.item, $event.target)">Show Fields
+            @click="showFieldsForm(row.item, $event.target)">Show Fields
           </b-button>
         </template>
       </b-table>
@@ -56,7 +57,17 @@
           </b-pagination>
         </b-col>
       </b-row>
-      <show-risk-field-modal :form-fields="formFields" />
+      <b-row>
+        <b-col md="3" offset="9" class="my-1">
+          <b-button
+            pill
+            variant="primary"
+            @click="addRiskForm($event.target)">Add Risk
+          </b-button>
+        </b-col>
+      </b-row>
+
+      <show-risk-field-modal :form-fields="showFieldsFormContent"/>
     </b-container>
   </div>
 </template>
@@ -69,11 +80,13 @@
   const singleTypeUrl = '/api/single_risk_type/';
 
   export default {
+    name: 'risk',
+
     components: {
       TopBar,
       ShowRiskFieldModal
     },
-    name: 'risk',
+
     data() {
       return {
         items: [],
@@ -85,11 +98,13 @@
         fields: [
           {key: 'name', label: 'Type'},
           {key: 'field_names_', label: 'Fields'},
-          {key: 'actions', label: 'Actions'}
+          {key: 'actions', label: 'Actions', thStyle: {'width': '35%'}}
         ],
-        formFields: {id: 'risk-modal', show: false}
+        showFieldsFormContent: {id: 'show-field-modal', show: false},
+        addRiskFormContent: {id: 'add-risk-modal', show: false}
       }
     },
+
     beforeMount() {
       this.$http.get(typeUrl).then((data) => {
         this.items = data.data.results;
@@ -97,22 +112,32 @@
         this.items = [];
       })
     },
+
     mounted() {
       this.totalRows = this.items.length;
     },
+
     methods: {
       onFiltered(filteredItems) {
         this.currentPage = 1;
         this.totalRows = filteredItems.length;
       },
-      fieldsForm(item, button) {
+
+      resetShowFieldsFormContent() {
+        this.showFieldsFormContent = {id: 'show-field-modal', show: false};
+      },
+
+      showFieldsForm(item, button) {
+        this.resetShowFieldsFormContent();
         this.$http.get(singleTypeUrl + '?risk_id=' + item.id).then((data) => {
-          this.formFields = Object.assign(this.formFields, data.data);
-          this.$root.$emit('bv::show::modal', this.formFields.id, button);
-          this.formFields.show = true;
-        }).catch(() => {
-          this.formFields = {id: 'show-field-modal', show: false};
-        })
+          this.showFieldsFormContent = Object.assign(this.showFieldsFormContent, data.data);
+          this.$root.$emit('bv::show::modal', this.showFieldsFormContent.id, button);
+          this.showFieldsFormContent.show = true;
+        });
+      },
+
+      addRiskForm(button) {
+        this.$root.$emit('bv::show::modal', this.addRiskFormContent.id, button);
       }
     }
   }
