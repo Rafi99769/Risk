@@ -25,6 +25,7 @@
         stacked="md"
         striped
         hover
+        :id="id"
         :items="items"
         :fields="fields"
         :filter="filter"
@@ -68,6 +69,9 @@
       </b-row>
 
       <show-risk-field-modal :form-fields="showFieldsFormContent"/>
+
+      <add-risk-modal :form-fields="addRiskFormContent" :api-url="typeUrl" 
+                      v-on:refresh-table="refreshTable"/>
     </b-container>
   </div>
 </template>
@@ -75,6 +79,7 @@
 <script>
   import TopBar from "./topbar";
   import ShowRiskFieldModal from "./show-risk-field-modal";
+  import AddRiskModal from "./add-risk-modal";
 
   const typeUrl = '/api/risk_type/';
   const singleTypeUrl = '/api/single_risk_type/';
@@ -83,17 +88,19 @@
     name: 'risk',
 
     components: {
+      AddRiskModal,
       TopBar,
       ShowRiskFieldModal
     },
 
     data() {
       return {
+        id: 'risk-table',
         items: [],
         filter: null,
         currentPage: 1,
         totalRows: 1,
-        perPage: 10,
+        perPage: 5,
         pageOptions: [1, 5, 10, 15],
         fields: [
           {key: 'name', label: 'Type'},
@@ -101,23 +108,30 @@
           {key: 'actions', label: 'Actions', thStyle: {'width': '35%'}}
         ],
         showFieldsFormContent: {id: 'show-field-modal', show: false},
-        addRiskFormContent: {id: 'add-risk-modal', show: false}
+        addRiskFormContent: {id: 'add-risk-modal', show: false},
+        typeUrl: typeUrl
       }
     },
 
-    beforeMount() {
-      this.$http.get(typeUrl).then((data) => {
-        this.items = data.data.results;
-      }).catch(() => {
-        this.items = [];
-      })
-    },
-
     mounted() {
-      this.totalRows = this.items.length;
+      this.loadData();
     },
 
     methods: {
+      loadData() {
+        this.$http.get(typeUrl).then((data) => {
+          this.items = data.data.results;
+          this.currentPage = 1;
+          this.totalRows = this.items.length;
+        }).catch(() => {
+          this.items = [];
+        })
+      },
+
+      refreshTable() {
+        this.loadData();
+      },
+
       onFiltered(filteredItems) {
         this.currentPage = 1;
         this.totalRows = filteredItems.length;
@@ -129,6 +143,7 @@
 
       showFieldsForm(item, button) {
         this.resetShowFieldsFormContent();
+
         this.$http.get(singleTypeUrl + '?risk_id=' + item.id).then((data) => {
           this.showFieldsFormContent = Object.assign(this.showFieldsFormContent, data.data);
           this.$root.$emit('bv::show::modal', this.showFieldsFormContent.id, button);
@@ -136,8 +151,14 @@
         });
       },
 
+      resetAddRiskFormContent() {
+        this.addRiskFormContent = {id: 'add-risk-modal', show: false, title: 'Add Risk'};
+      },
+
       addRiskForm(button) {
+        this.resetAddRiskFormContent();
         this.$root.$emit('bv::show::modal', this.addRiskFormContent.id, button);
+        this.addRiskFormContent.show = true;
       }
     }
   }
@@ -147,5 +168,9 @@
   li {
     display: inline-block;
     margin: 0 0;
+  }
+  
+  .m-t-15 {
+    margin-top: 15%;
   }
 </style>

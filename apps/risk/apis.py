@@ -5,7 +5,7 @@ from apps.risk import models, serializers
 
 
 class RiskTypeViewSet(viewsets.ModelViewSet):
-    queryset = models.RiskType.objects.all()
+    queryset = models.RiskType.objects.all().order_by('-id')
     serializer_class = serializers.RiskTypeSerializer
 
 

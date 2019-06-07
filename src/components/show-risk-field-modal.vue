@@ -1,16 +1,8 @@
 <template>
-  <b-modal
+  <base-modal
     :id="formFields.id"
     :title="formFields.risk"
-    ok-only
-    centered
-    :ok-variant="'dark'"
-    :header-bg-variant="'info'"
-    :footer-bg-variant="'info'"
-    content-class="border-0"
-    header-class="top-radius-0"
-    footer-class="bottom-radius-0"
-    @hide="resetForm">
+    v-on:reset-form="resetForm">
     <b-form v-if="formFields.show">
       <b-form-group v-for="field in formFields.fields"
                     :key="field.id"
@@ -29,12 +21,16 @@
         </b-form-select>
       </b-form-group>
     </b-form>
-  </b-modal>
+  </base-modal>
 </template>
 
 <script>
+  import BaseModal from "./base-modal";
+
   export default {
     name: 'show-risk-field-modal',
+
+    components: {BaseModal},
 
     props: {
       formFields: Object
