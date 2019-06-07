@@ -70,7 +70,7 @@
 
       <show-risk-field-modal :form-fields="showFieldsFormContent"/>
 
-      <add-risk-modal :form-fields="addRiskFormContent" :api-url="typeUrl" 
+      <add-risk-modal :form-fields="addRiskFormContent" :api-url="typeUrl"
                       v-on:refresh-table="refreshTable"/>
     </b-container>
   </div>
@@ -120,7 +120,7 @@
     methods: {
       loadData() {
         this.$http.get(typeUrl).then((data) => {
-          this.items = data.data.results;
+          this.items = data.data;
           this.currentPage = 1;
           this.totalRows = this.items.length;
         }).catch(() => {
@@ -163,14 +163,3 @@
     }
   }
 </script>
-
-<style>
-  li {
-    display: inline-block;
-    margin: 0 0;
-  }
-  
-  .m-t-15 {
-    margin-top: 15%;
-  }
-</style>
