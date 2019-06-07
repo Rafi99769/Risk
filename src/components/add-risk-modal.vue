@@ -45,10 +45,10 @@
       submitForm() {
         if (this.riskType) {
           this.$http.post(this.apiUrl, {name: this.riskType}).then(() => {
-            this.showToast('success', 'Risk Created Successfully');
+            this.showToast('success', 'Risk type created successfully', 'Success');
             this.$emit('refresh-table');
           }).catch(err => {
-            this.showToast('danger', err);
+            this.showError(err);
           });
         }
 
