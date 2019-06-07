@@ -27,11 +27,11 @@
     },
 
     methods: {
-      okPressed() {
+      okPressed(event) {
         if (this.submit)
-          this.$emit('do-submit');
+          this.$emit('do-submit', event);
         else
-          this.$emit('reset-form');
+          this.$emit('reset-form', event);
       }
     }
   }

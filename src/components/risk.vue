@@ -39,7 +39,8 @@
           </b-button>
           <b-button
             size="sm"
-            variant="success">Add Fields
+            variant="success"
+            @click="addFieldsForm($event.target)">Add Fields
           </b-button>
           <b-button
             size="sm"
@@ -72,6 +73,9 @@
 
       <add-risk-modal :form-fields="addRiskFormContent" :api-url="typeUrl"
                       v-on:refresh-table="refreshTable"/>
+
+      <add-fields-modal :form-fields="addFieldsFormContent" :api-url="typeUrl"
+                      v-on:refresh-table="refreshTable"/>
     </b-container>
   </div>
 </template>
@@ -80,6 +84,7 @@
   import TopBar from "./topbar";
   import ShowRiskFieldModal from "./show-risk-field-modal";
   import AddRiskModal from "./add-risk-modal";
+  import AddFieldsModal from "./add-fields-modal";
 
   const typeUrl = '/api/risk_type/';
   const singleTypeUrl = '/api/single_risk_type/';
@@ -90,7 +95,8 @@
     components: {
       AddRiskModal,
       TopBar,
-      ShowRiskFieldModal
+      ShowRiskFieldModal,
+      AddFieldsModal
     },
 
     data() {
@@ -109,6 +115,7 @@
         ],
         showFieldsFormContent: {id: 'show-field-modal', show: false},
         addRiskFormContent: {id: 'add-risk-modal', show: false},
+        addFieldsFormContent: {id: 'add-field-modal', show: false},
         typeUrl: typeUrl
       }
     },
@@ -159,6 +166,16 @@
         this.resetAddRiskFormContent();
         this.$root.$emit('bv::show::modal', this.addRiskFormContent.id, button);
         this.addRiskFormContent.show = true;
+      },
+
+      resetAddFieldFormContent() {
+        this.addFieldsFormContent = {id: 'add-field-modal', show: false, title: 'Add Field'};
+      },
+
+      addFieldsForm(button) {
+        this.resetAddFieldFormContent();
+        this.$root.$emit('bv::show::modal', this.addFieldsFormContent.id, button);
+        this.addFieldsFormContent.show = true;
       }
     }
   }
