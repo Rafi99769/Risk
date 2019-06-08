@@ -21,4 +21,12 @@
   .m-t-15 {
     margin-top: 15%;
   }
+
+  .w-90 {
+    width: 90% !important;
+  }
+
+  .w-40 {
+    width: 40% !important;
+  }
 </style>

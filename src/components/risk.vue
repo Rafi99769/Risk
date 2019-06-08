@@ -40,7 +40,7 @@
           <b-button
             size="sm"
             variant="success"
-            @click="addFieldsForm($event.target)">Add Fields
+            @click="addFieldsForm(row.item, $event.target)">Add Fields
           </b-button>
           <b-button
             size="sm"
@@ -71,11 +71,14 @@
 
       <show-risk-field-modal :form-fields="showFieldsFormContent"/>
 
-      <add-risk-modal :form-fields="addRiskFormContent" :api-url="typeUrl"
+      <add-risk-modal :form-fields="addRiskFormContent"
+                      :api-url="typeUrl"
                       v-on:refresh-table="refreshTable"/>
 
-      <add-fields-modal :form-fields="addFieldsFormContent" :api-url="typeUrl"
-                      v-on:refresh-table="refreshTable"/>
+      <add-fields-modal :form-fields="addFieldsFormContent"
+                        :api-url="fieldUrl"
+                        v-on:refresh-table="refreshTable"
+                        :risk-id="riskId"/>
     </b-container>
   </div>
 </template>
@@ -87,6 +90,7 @@
   import AddFieldsModal from "./add-fields-modal";
 
   const typeUrl = '/api/risk_type/';
+  const fieldUrl = '/api/risk_field/';
   const singleTypeUrl = '/api/single_risk_type/';
 
   export default {
@@ -116,7 +120,9 @@
         showFieldsFormContent: {id: 'show-field-modal', show: false},
         addRiskFormContent: {id: 'add-risk-modal', show: false},
         addFieldsFormContent: {id: 'add-field-modal', show: false},
-        typeUrl: typeUrl
+        typeUrl: typeUrl,
+        fieldUrl: fieldUrl,
+        riskId: null
       }
     },
 
@@ -172,8 +178,9 @@
         this.addFieldsFormContent = {id: 'add-field-modal', show: false, title: 'Add Field'};
       },
 
-      addFieldsForm(button) {
+      addFieldsForm(item, button) {
         this.resetAddFieldFormContent();
+        this.riskId = item.id.toString();
         this.$root.$emit('bv::show::modal', this.addFieldsFormContent.id, button);
         this.addFieldsFormContent.show = true;
       }
