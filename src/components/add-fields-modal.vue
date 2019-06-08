@@ -109,6 +109,15 @@
       }
     },
 
+    mounted() {
+      this.$root.$on('bv::modal::hide', (event, modalId) => {
+        if (modalId === this.formFields.id)
+          this.resetRiskFields();
+        else
+          this.resetChoice();
+      });
+    },
+
     methods: {
       submitForm() {
         this.$http.post(this.apiUrl, {
@@ -142,6 +151,23 @@
 
       deleteField(index) {
         this.riskFields.splice(index, 1);
+      },
+
+      resetRiskFields() {
+        this.riskFields = [
+          {
+            name: '',
+            type: '',
+            choices: []
+          }
+        ];
+      },
+
+      resetChoice() {
+        this.choice = {
+          index: null,
+          value: ''
+        }
       }
     }
   }

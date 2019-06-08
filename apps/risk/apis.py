@@ -38,7 +38,9 @@ class RiskFieldView(views.APIView):
         with transaction.atomic():
             try:
                 for field in request.data.get('risk_fields'):
-                    risk_field = models.RiskField.objects.create(name=field['name'], type=field['type'], risk_id=risk_id)
+                    risk_field = models.RiskField.objects.create(name=field['name'],
+                                                                 type=field['type'],
+                                                                 risk_id=risk_id)
 
                     if field['type'] == 'enum':
                         for choice in field['choices']:
