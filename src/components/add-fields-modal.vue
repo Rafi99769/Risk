@@ -6,14 +6,13 @@
       :submit="true"
       v-on:do-submit="submitForm">
       <div class="panel panel-default"
-           v-for="(field, index) in riskFields">
+           v-for="(field, index) in riskFields" :key="index">
         <div class="text-right ml-lg-5">
         <span style="cursor: pointer"
               @click="deleteField(index)">×</span>
         </div>
         <div class="panel-body">
           <b-form v-if="formFields.show"
-                  :key="index"
                   class="mb-2"
                   inline>
             <label>Field</label>

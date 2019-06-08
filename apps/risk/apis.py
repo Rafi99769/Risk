@@ -6,6 +6,7 @@ from apps.risk import models, serializers
 
 
 class RiskTypeViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post']
     queryset = models.RiskType.objects.all().order_by('-id')
     serializer_class = serializers.RiskTypeSerializer
 
@@ -44,7 +45,8 @@ class RiskFieldView(views.APIView):
 
                     if field['type'] == 'enum':
                         for choice in field['choices']:
-                            enum_choices.append(models.EnumChoice(field_id=risk_field.id, name=choice))
+                            enum_choices.append(models.EnumChoice(field_id=risk_field.id, 
+                                                                  name=choice))
 
                 models.EnumChoice.objects.bulk_create(enum_choices)
             except Exception as e:
