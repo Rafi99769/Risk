@@ -12,3 +12,4 @@ webpack-stats.json
 *.ntvs*
 *.njsproj
 *.sln
+*.pyc
